@@ -149,3 +149,14 @@ BFC的一些作用：
 	</div>
 </body>
 ```
+
+4. 定位
+position有五个属性：static（默认）、relative、absolute、fixed、sticky。
+* relative
+相对定位，被设置元素不脱离文档流，定位基点相对未添加定位时的位置定位
+* absolute
+绝对定位，被设置元素脱离文档流不占位置，定位基点为第一个设置了不为static的定位祖先元素
+* fixed
+固定定位(or绝对定位)，被设置元素脱离文档流不占位置，会根据屏幕视口来定位，需要注意的是当transform，filter属性非none时，定位由是视口改为改祖先元素
+* sticky
+粘性定位，被认为是相对定位和固定定位的混合，当页面滚动，度元素开始脱离视口时，只要达到sticky设置的生效门槛(top、left等)，relative就会切换为fixed，等父元素完全脱离视口时，fixed自动切换回relative定位
