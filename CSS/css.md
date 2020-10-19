@@ -1,4 +1,4 @@
-### 水平垂直居中
+## 水平垂直居中
 1. 已知元素宽高，使用position百分比+margin负数
 ```css
 .example {
@@ -23,6 +23,7 @@
 ```
 
 3. margin: auto; + position
+```css
 .example {
   position: absolute;
   left: 0;
@@ -47,14 +48,14 @@
 }
 ```
 
-### 盒子模型
+## 盒子模型
 盒子模型分为标准盒子模型和IE盒子模型，模型内容包括：margin、border、padding、content部分。标准盒子模型width和height只代表content部分，erIE盒子模型width和height包括border+padding+content。大部分情况下IE盒子模型比标准盒子模型更好用。两种模型切换方法：
 ```css
 box-sizing: border-box; /*IE盒子模型样式*/
 box-sizing: content-box; /*标准盒子模型样式*/
 ```
 
-### BFC
+## BFC
 BFC指的是块级格式化上下文，一个元素形成了BFC之后，那么它内部元素产生的布局不会影响到外部元素，外部元素的布局也不会影响到BFC中的内部元素。一个BFC就像是一个隔离区域，和其他区域互不影响。
 
 BFC布局规则：
@@ -66,7 +67,7 @@ BFC布局规则：
 * 计算BFC的高度时，浮动元素也参与计算
 
 触发BFC条件：
-* 根元素（<html>）
+* 根元素（`<html>`）
 * 浮动元素（元素的float不是none）
 * 绝对定位元素（元素的position为fixed或absolute）
 * 行内块元素（display为inline-block）
@@ -150,7 +151,7 @@ BFC的一些作用：
 </body>
 ```
 
-4. 定位
+## 定位
 position有五个属性：static（默认）、relative、absolute、fixed、sticky。
 * relative
 相对定位，被设置元素不脱离文档流，定位基点相对未添加定位时的位置定位
@@ -160,3 +161,24 @@ position有五个属性：static（默认）、relative、absolute、fixed、sti
 固定定位(or绝对定位)，被设置元素脱离文档流不占位置，会根据屏幕视口来定位，需要注意的是当transform，filter属性非none时，定位由是视口改为改祖先元素
 * sticky
 粘性定位，被认为是相对定位和固定定位的混合，当页面滚动，度元素开始脱离视口时，只要达到sticky设置的生效门槛(top、left等)，relative就会切换为fixed，等父元素完全脱离视口时，fixed自动切换回relative定位
+
+## 层叠上下文
+1. 什么是层叠上下文
+> 层叠上下文(stacking context)，是HTML中一个三维的概念。在CSS2.1规范中，每个盒模型的位置是三维的，分别是平面画布上的X轴，Y轴以及表示层叠的Z轴。一般情况下，元素在页面上沿X轴Y轴平铺，我们察觉不到它们在Z轴上的层叠关系。而一旦元素发生堆叠，这时就能发现某个元素可能覆盖了另一个元素或者被另一个元素覆盖。
+> 如果一个元素含有层叠上下文，(也就是说它是层叠上下文元素)，我们可以理解为这个元素在Z轴上就“高人一等”，最终表现就是它离屏幕观察者更近。
+
+2. 什么是层叠等级
+> * 在同一个层叠上下文中，它描述定义的是该层叠上下文中的层叠上下文元素在Z轴上的上下顺序。
+> * 在其他普通元素中，它描述定义的是这些普通元素在Z轴上的上下顺序。
+
+3. 形成层叠上下文的条件（不常用的未列举）
+* 文档根元素（`<html>`）
+* position 值为 absolute（绝对定位）或  relative（相对定位）且 z-index 值不为 auto 的元素；
+* position 值为 fixed（固定定位）或 sticky（粘滞定位）的元素（沾滞定位适配所有移动设备上的浏览器，但老的桌面浏览器不支持）；
+* flex (flexbox) 容器的子元素，且 z-index 值不为 auto；
+* opacity 属性值小于 1 的元素
+* transform、filter、perspective、clip-path、mask / mask-image / mask-border属性值不为 none 的元素。
+
+## 实现等宽高自适应容器元素
+1. 使用vw、vh，比如想实现宽度只有一半屏幕宽度，设置width和height都为50vw
+2. 使用padding，因为padding百分比是根据父元素宽度来设置的，设置容器width:100%;height:0;padding-bottom:100%;
