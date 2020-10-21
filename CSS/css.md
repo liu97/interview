@@ -182,3 +182,9 @@ position有五个属性：static（默认）、relative、absolute、fixed、sti
 ## 实现等宽高自适应容器元素
 1. 使用vw、vh，比如想实现宽度只有一半屏幕宽度，设置width和height都为50vw
 2. 使用padding，因为padding百分比是根据父元素宽度来设置的，设置容器width:100%;height:0;padding-bottom:100%;
+
+## CSS权重
+!important > inline style > id > class|attribute|pseudo-class > element
+[权重详细信息](https://specifishity.com/)
+
+CSS权重跨级没有可比性，一定是权重级大的生效，只有当在同一级的时候才会相加来比较权重大小
