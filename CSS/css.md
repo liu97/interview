@@ -188,3 +188,9 @@ position有五个属性：static（默认）、relative、absolute、fixed、sti
 [权重详细信息](https://specifishity.com/)
 
 CSS权重跨级没有可比性，一定是权重级大的生效，只有当在同一级的时候才会相加来比较权重大小
+
+## 清除浮动的方法
+使用clear属性来清除，需作用在块级元素上
+1. 浮动元素的下一个兄弟设置：`clear: both;`
+2. 父元素的`::after`伪元素设置：`clear: both; display:block;`
+3. 父元素形成[BFC](#bfc)
