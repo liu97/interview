@@ -39,3 +39,40 @@ Object.__proto__ == Function.prototype
 5. 箭头函数没有自己的`arguments`对象，箭头函数可以访问外围函数的`arguments`对象，全局情况下访问`window.arguments`
 6. 箭头函数new.target指向外层普通函数的引用
 7. 箭头函数写法更简洁
+
+### Promise
+Promise 是异步编程的一种解决方案，比传统的解决方案——回调函数和事件——更合理和更强大。Promise 是一个构造函数，接收一个函数作为参数，返回一个 Promise 实例。一个 Promise 实例有三种状态，分别是 pending、resolved 和 rejected，分别代表了进行中、已成功和已失败。实例的状态只能由 pending 转变 resolved 或者 rejected 状态，并且状态一经改变，就凝固了，无法再被改变了。状态的改变是通过 resolve() 和 reject() 函数来实现的，我们
+可以在异步操作结束后调用这两个函数改变 Promise 实例的状态，它的原型上定义了一个 then 方法，使用这个 then 方法可以为两个状态的改变注册回调函数。这个回调函数属于微任务，会在本轮事件循环的末尾执行。
+
+### 多个异步任务依次执行
+```javascript
+function asyncFunction1(){
+  return new Promise((resolve, reject)=>{
+    setTimeout(()=>{
+      resolve('asyncFunction1')
+    }, 1000)
+  })
+}
+function asyncFunction2(){
+  return new Promise((resolve, reject)=>{
+    setTimeout(()=>{
+      resolve('asyncFunction2')
+    }, 1000)
+  })
+}
+function asyncFunction3(){
+  return new Promise((resolve, reject)=>{
+    setTimeout(()=>{
+      resolve('asyncFunction3')
+    }, 1000)
+  })
+}
+
+function orderPrint(){
+  asyncFunction1().then(()=>{
+    return asyncFunction2()
+  }).then(()=>{
+    return asyncFunction3()
+  })
+}
+```
