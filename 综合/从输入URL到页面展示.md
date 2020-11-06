@@ -92,6 +92,29 @@ URL（Uniform Resource Locator,统一资源定位符）。由一串简单的文�
 * 同步的JavaScript会暂停DOMTree的构建，应放到代码的尾部最后加载，或者使用async/defer属性异步加载JavaScript。
 * 重排和重绘会给浏览器渲染线程造成很大的负担，尽量减少重排和重绘的触发次数。
 
+### 回流
+会导致回流的操作：
+* 页面首次渲染
+* 浏览器窗口大小发生改变
+* 元素尺寸或位置发生改变
+* 元素内容变化（文字数量或图片大小等等）
+* 元素字体大小变化
+* 添加或者删除可见的DOM元素
+* 激活CSS伪类（例如：:hover）
+* 查询某些属性或调用某些方法
+
+一些常用且会导致回流的属性和方法：
+* clientWidth、clientHeight、clientTop、clientLeft
+* offsetWidth、offsetHeight、offsetTop、offsetLeft
+* scrollWidth、scrollHeight、scrollTop、scrollLeft
+* scrollIntoView()、scrollIntoViewIfNeeded()
+* getComputedStyle()
+* getBoundingClientRect()
+* scrollTo()
+
+### 重绘
+当页面中元素样式的改变并不影响它在文档流中的位置时（例如：color、background-color、visibility等），浏览器会将新样式赋予给元素并重新绘制它，这个过程称为重绘。
+
 ### defer：
 defer 属性表示延迟执行引入的 JavaScript，即这段 JavaScript 加载时 HTML 并未停止解析，这两个过程是并行的。整个 document 解析完毕且 defer-script 也加载完成之后（这两件事情的顺序无关），会执行所有由 defer-script 加载的 JavaScript 代码，然后触发 DOMContentLoaded 事件。defer 不会改变 script 中代码的执行顺序，示例代码会按照 1、2、3 的顺序执行。所以，defer 与相比普通 script，有两点区别：载入 JavaScript 文件时不阻塞 HTML 的解析，执行阶段被放到 HTML 标签解析完成之后。
 
