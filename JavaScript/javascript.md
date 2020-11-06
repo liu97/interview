@@ -1,4 +1,3 @@
-## 常见基础题
 ### this指向
 this 是执行上下文中的一个属性，它指向最后一次调用这个方法的对象。在实际开发中，this 的指向可以通过四种调用模
 式来判断。
@@ -17,6 +16,35 @@ js主线程它是有一个执行栈，所有的js代码都会在执行栈里运�
 3. 检查 Microtask 队列是否为空，若不为空，则进入下一步，否则，跳到1（开始新的事件循环）
 4. 从 Microtask 队列中取队首(在队列时间最长)的任务进去事件队列执行,执行完后，跳到3
 其中，在执行代码过程中新增的microtask任务会在当前事件循环周期内执行，而新增的macrotask任务只能等到下一个事件循环才能执行了。
+```javascript
+const a = new Promise((resolve, reject) => {
+    console.log('promise1')
+    resolve()
+}).then(() => {
+    console.log('promise2')
+})
+setTimeout(function(){
+  console.log('setTimeout1');
+  Promise.resolve().then(()=>{
+    console.log('resolve1')
+  })
+},0)
+setTimeout(function(){
+   console.log('setTimeout2');
+   Promise.resolve().then(()=>{
+    console.log('resolve2')
+  })
+},0)
+const b = new Promise(async (resolve, reject) => {
+    await a
+    console.log('after1')
+    await b
+    console.log('after2')
+    resolve()
+})
+console.log('end')
+// promise1 end promise2 after1 setTimeout1 resolve1 setTimeout2 resolve2
+```
 
 ### 原型链
 ```javascript
@@ -74,5 +102,127 @@ function orderPrint(){
   }).then(()=>{
     return asyncFunction3()
   })
+}
+```
+
+### 数组扁平化，可以控制展开深度
+```javascript
+function deepFlatten(value, layer = 1){
+    let result = []
+    function loop(start, arr = [], l = 0){
+        if(l <= layer){
+            l++;
+            for(let item of start){
+                if(Array.isArray(item)){
+                    loop(item, result, l);
+                }else{
+                    result.push(item);
+                }
+            }
+        }else{
+            result.push(start);
+        }
+    }
+    if(Array.isArray(value)){
+        loop(value);
+        return result
+    }else{
+        return value
+    }
+    
+}
+let r = deepFlatten([1, [2, [3, [4, 5], 6], 7], 8], 2)
+```
+
+### 模拟new运算符操作
+```javascript
+function isObject(obj){
+  return typeof obj === 'object' && obj !== null
+}
+function isFunction(fun){
+  return typeof fun === 'function'
+}
+function newOperator(fun, ...args){
+  if(!isFunction(fun)){
+    return throw Error(`${JSON.stringify(fun)} is not a constructor`)
+  }
+  let obj = Object.create(fun.prototype)
+  let back = fun.call(obj, ...args)
+  if(isObject(back) || isFunction(back)){
+    return back
+  }else{
+    return obj
+  }
+}
+```
+
+### 异步reject自动重试
+```javascript
+// 使用autoRetry()包裹方法，并给出最大重试次数（执行数=重试次数+1）
+function foo(param) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        try{
+          JSON.parse('{{'); // 执行到这里会报错
+          return resolve(param)
+        } catch (err) {
+          return reject(err)
+        }
+      }, 1000)
+    })
+  }
+function autoRetry(fun, time){
+    let curTime = 0;
+    return function result(...arg){
+        return new Promise((resolve, reject) => {
+            fun(...arg).then((data)=>{
+                resolve(data);
+            }).catch((err)=>{
+                curTime++
+                if(curTime <= time){
+                    resolve(result(...arg));
+                }else{
+                    reject(err)
+                }
+            })
+        })
+    }
+}
+  
+let func = autoRetry(foo, 3);
+func({ a: 1, b: 1 }).then(function (res) {
+  console.log(res)
+}, function (err) {
+  console.log(err)
+})
+```
+
+### 最接近值
+```javascript
+// 给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和。假定每组输入只存在唯一答案。 示例： 输入：nums = [-1,2,1,-4], target = 1 输出：2 解释：与 target 最接近的和是 2 (-1 + 2 + 1 = 2) 。
+function getNear(nums, target){
+  nums.sort();
+  let best = Infinity,
+      length = nums.length;
+  for(let i = 0; i < length; i++){
+    let j = i+1,
+        k = length-1;
+    while(j < k){
+      let sum = nums[i]+nums[j]+nums[k];
+      if(Math.abs(sum-target) < Math.abs(best)){ // 获取更接近值
+        best = sum-target;
+      }
+
+      if(sum-target === 0){ // 找到相等值
+        return target;
+      }else if(sum-target < 0){
+        j++;
+      }else{
+        k--;
+      }
+    }
+  }
+
+  return best+target;
 }
 ```
