@@ -156,6 +156,64 @@ function newOperator(fun, ...args){
 }
 ```
 
+### 实现防抖函数
+```javascript
+function debounce(fun, wait = 0, immediate = false){
+  if(typeof fun != 'function'){
+    throw Error(`${JSON.stringify(fun)} is not a function`);
+  }
+
+  let timer = null;
+  return function(...args){
+    clearTimeout(timer);
+    if(immediate){
+      if(timer === null){
+        fun.apply(this, args);
+      }
+      timer = setTimeout(()=>{
+        timer = null;
+      }, wait)
+    }else{
+      timer = setTimeout(fun.bind(this, ...args), wait)
+    }
+  }
+}
+```
+
+### 实现节流函数
+```javascript
+function throttle(fun, wait = 0){ // 时间戳实现
+  if(typeof fun != 'function'){
+    throw Error(`${JSON.stringify(fun)} is not a function`);
+  }
+
+  let oldTime = new Date();
+  return function(...args){
+    let nowTime = new Date();
+    if(nowTime - oldTime >= wait){
+      fun.apply(this, args);
+      oldTime = nowTime;
+    }
+  }
+}
+
+function throttle(fun, wait){ // 定时器实现
+  if(typeof fun != 'function'){
+    throw Error(`${JSON.stringify(fun)} is not a function`);
+  }
+
+  let timer = null;
+  return function(...args){
+      if(timer === null){
+        timer = setTimeout(()=>{
+          fun.apply(this, args);
+          timer = null;
+        } ,wait)
+      }
+  }
+}
+```
+
 ### 异步reject自动重试
 ```javascript
 // 使用autoRetry()包裹方法，并给出最大重试次数（执行数=重试次数+1）
