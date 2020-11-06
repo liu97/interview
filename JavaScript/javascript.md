@@ -257,7 +257,8 @@ func({ a: 1, b: 1 }).then(function (res) {
 
 ### 最接近值
 ```javascript
-// 给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和。假定每组输入只存在唯一答案。 示例： 输入：nums = [-1,2,1,-4], target = 1 输出：2 解释：与 target 最接近的和是 2 (-1 + 2 + 1 = 2) 。
+// 给定一个包括 n 个整数的数组 nums 和 一个目标值 target。找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和。
+// 假定每组输入只存在唯一答案。 示例： 输入：nums = [-1,2,1,-4], target = 1 输出：2 解释：与 target 最接近的和是 2 (-1 + 2 + 1 = 2) 。
 function getNear(nums, target){
   nums.sort();
   let best = Infinity,
@@ -282,5 +283,26 @@ function getNear(nums, target){
   }
 
   return best+target;
+}
+```
+
+### 相交链表
+```javascript
+// 找到两个单链表相交的起始节点，假定两链表一定有相交节点
+
+function node(val, next) {
+  this.val = val
+  this.next = next
+}
+
+function findNode(root1, root2){
+  if(!root1 || !root2) return null
+	let head1 = root1, head2 = root2
+  while(head1 !== head2){
+      head1 = head1.next === null ? root2 : head1.next
+			head2 = head2.next === null ? root1 : head2.next
+  }
+  
+  return head1
 }
 ```
